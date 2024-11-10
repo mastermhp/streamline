@@ -11,6 +11,7 @@ import {
   Share2,
   Video,
 } from "lucide-react";
+import Link from "next/link";
 
 function PowerfulFeatures() {
   return (
@@ -25,11 +26,13 @@ function PowerfulFeatures() {
             title="Text-to-Video Generation"
             description="Convert your text into dynamic videos"
           />
+          <Link href={"/dashboard/pre-made-templates"}>
           <FeatureCard
             icon={<LayoutTemplate />}
             title="Pre-made Templates"
             description="Choose from hundreds of professional templates"
           />
+          </Link>
           <FeatureCard
             icon={<Edit3 />}
             title="Video Editing Tools"

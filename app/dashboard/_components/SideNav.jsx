@@ -1,5 +1,5 @@
 "use client"
-import { CircleUser, FileVideo, PanelsTopLeft, ShieldPlus } from 'lucide-react'
+import { CircleUser, FileVideo, LayoutTemplate, PanelsTopLeft, ShieldPlus } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React from 'react'
@@ -21,12 +21,18 @@ function SideNav() {
         },
         {
             id: 3,
+            name: 'Templates',
+            path: '/dashboard/pre-made-templates',
+            icon: LayoutTemplate
+        },
+        {
+            id: 4,
             name: 'Upgrade',
             path: '/upgrade',
             icon: ShieldPlus
         },
         {
-            id: 4,
+            id: 5,
             name: 'Account',
             path: '/account',
             icon: CircleUser
