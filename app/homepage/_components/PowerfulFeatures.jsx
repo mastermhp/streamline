@@ -35,7 +35,7 @@ function PowerfulFeatures() {
               description="Choose from hundreds of professional templates"
             />
           </Link>
-          <Link href={"/dashboard/editing-tools"}>
+          <Link href={"/dashboard/video-editing-tools"}>
             <FeatureCard
               icon={<Edit3 />}
               title="Video Editing Tools"
