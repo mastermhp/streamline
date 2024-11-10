@@ -48,11 +48,14 @@ function PowerfulFeatures() {
             title="Music & Sound"
             description="Integrate music and sound effects"
           />
-          <FeatureCard
-            icon={<Bot />}
-            title="AI Scripts"
-            description="Generate engaging video scripts automatically"
-          />
+          <Link href={"/dashboard/ai-scripts"}>
+            <FeatureCard
+              icon={<Bot />}
+              title="AI Scripts"
+              description="Generate engaging video scripts automatically"
+            />
+          </Link>
+
           <FeatureCard
             icon={<Mic />}
             title="AI Voiceovers"

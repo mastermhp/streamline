@@ -1,5 +1,5 @@
 "use client"
-import { CircleUser, Edit3, FileVideo, LayoutTemplate, PanelsTopLeft, ShieldPlus } from 'lucide-react'
+import { Bot, CircleUser, Edit3, FileVideo, LayoutTemplate, PanelsTopLeft, ShieldPlus } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React from 'react'
@@ -21,24 +21,30 @@ function SideNav() {
         },
         {
             id: 3,
+            name: 'AI Scripts',
+            path: '/dashboard/ai-scripts',
+            icon: Bot
+        },
+        {
+            id: 4,
             name: 'Templates',
             path: '/dashboard/pre-made-templates',
             icon: LayoutTemplate
         },
         {
-            id: 4,
+            id: 5,
             name: 'Editing Tools',
             path: '/dashboard/video-editing-tools',
             icon: Edit3
         },
         {
-            id: 5,
+            id: 6,
             name: 'Upgrade',
             path: '/upgrade',
             icon: ShieldPlus
         },
         {
-            id: 6,
+            id: 7,
             name: 'Account',
             path: '/account',
             icon: CircleUser
