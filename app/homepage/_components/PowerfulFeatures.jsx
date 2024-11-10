@@ -21,23 +21,28 @@ function PowerfulFeatures() {
           Powerful Features
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <FeatureCard
-            icon={<Video />}
-            title="Text-to-Video Generation"
-            description="Convert your text into dynamic videos"
-          />
-          <Link href={"/dashboard/pre-made-templates"}>
-          <FeatureCard
-            icon={<LayoutTemplate />}
-            title="Pre-made Templates"
-            description="Choose from hundreds of professional templates"
-          />
+          <Link href={"/dashboard/create-new"}>
+            <FeatureCard
+              icon={<Video />}
+              title="Text-to-Video Generation"
+              description="Convert your text into dynamic videos"
+            />
           </Link>
-          <FeatureCard
-            icon={<Edit3 />}
-            title="Video Editing Tools"
-            description="Trim, crop, and enhance your videos"
-          />
+          <Link href={"/dashboard/pre-made-templates"}>
+            <FeatureCard
+              icon={<LayoutTemplate />}
+              title="Pre-made Templates"
+              description="Choose from hundreds of professional templates"
+            />
+          </Link>
+          <Link href={"/dashboard/editing-tools"}>
+            <FeatureCard
+              icon={<Edit3 />}
+              title="Video Editing Tools"
+              description="Trim, crop, and enhance your videos"
+            />
+          </Link>
+
           <FeatureCard
             icon={<Music />}
             title="Music & Sound"

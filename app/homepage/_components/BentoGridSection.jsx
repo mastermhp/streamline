@@ -28,6 +28,7 @@ function BentoGridSection() {
                     className="size-full object-cover object-top"
                     src="sample.mp4"
                     autoPlay
+                    muted
                     loop
                     controls
                     alt=""
