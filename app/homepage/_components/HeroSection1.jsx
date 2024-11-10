@@ -5,6 +5,8 @@ import { Dialog, DialogPanel } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { UserButton } from "@clerk/nextjs";
 import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import { Sparkles } from "lucide-react";
 
 const navigation = [
   { name: "Product", href: "#" },
@@ -18,7 +20,7 @@ function HeroSection1() {
 
   return (
     <div className="bg-white">
-      <header className="absolute inset-x-0 top-0 z-50">
+      <header className="sticky inset-x-0 top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <nav
           aria-label="Global"
           className="flex items-center justify-between p-6 lg:px-8"
@@ -121,6 +123,7 @@ function HeroSection1() {
           />
         </div>
         <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
+          
           <div className="hidden sm:mb-8 sm:flex sm:justify-center">
             <div className="relative rounded-full px-3 py-1 text-sm/6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20">
               Announcing our next round of funding.{" "}
@@ -131,16 +134,24 @@ function HeroSection1() {
             </div>
           </div>
           <div className="text-center">
-            <h1 className="text-balance text-5xl font-semibold tracking-tight text-gray-900 sm:text-7xl">
-              Automate Your Content Creation
+            <Badge variant="secondary" className="h-6">
+              <Sparkles className="mr-2 h-3.5 w-3.5" />
+              Powered by GEMINI
+            </Badge>
+            <h1 className="mt-2 text-3xl font-bold sm:text-3xl md:text-4xl lg:text-5xl">
+              Automate Your Creation
+              <br />
+              with{" "}
+              <span className="bg-gradient-to-r from-primary to-primary-foreground bg-clip-text text-transparent">
+                Faceless Videos
+              </span>
             </h1>
-            <p className="mt-8 text-pretty text-lg font-medium text-gray-500 sm:text-xl/8">
+            <p className="mt-8 text-pretty text-md font-medium text-gray-500 sm:text-xl/8">
               Transform your ideas into engaging videos without showing your
               face. Perfect for content creators looking to expand their reach
               effortlessly.
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
-
               <Link
                 href={"/dashboard"}
                 className="rounded-md bg-fuchsia-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-fuchsia-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fuchsia-600"
