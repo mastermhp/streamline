@@ -66,11 +66,14 @@ function PowerfulFeatures() {
             title="Stock Library"
             description="Access millions of images and videos"
           />
-          <FeatureCard
-            icon={<Share2 />}
-            title="Social Media Integration"
-            description="Share directly to social platforms"
-          />
+          <Link href={"/dashboard/social-media"}>
+            <FeatureCard
+              icon={<Share2 />}
+              title="Social Media Integration"
+              description="Share directly to social platforms"
+            />
+          </Link>
+
           <FeatureCard
             icon={<Calendar />}
             title="Schedule Uploads"

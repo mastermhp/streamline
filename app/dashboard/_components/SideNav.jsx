@@ -1,5 +1,5 @@
 "use client"
-import { Bot, CircleUser, Edit3, FileVideo, LayoutTemplate, PanelsTopLeft, ShieldPlus } from 'lucide-react'
+import { Bot, CircleUser, Edit3, FileVideo, LayoutTemplate, PanelsTopLeft, Share2, ShieldPlus } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React from 'react'
@@ -39,12 +39,18 @@ function SideNav() {
         },
         {
             id: 6,
+            name: 'Media',
+            path: '/dashboard/social-media',
+            icon: Share2
+        },
+        {
+            id: 7,
             name: 'Upgrade',
             path: '/upgrade',
             icon: ShieldPlus
         },
         {
-            id: 7,
+            id: 8,
             name: 'Account',
             path: '/account',
             icon: CircleUser
