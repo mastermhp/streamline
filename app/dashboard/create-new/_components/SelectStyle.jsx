@@ -14,7 +14,7 @@ function SelectStyle({onUserSelect}) {
     },
     {
       name: "Comic",
-      image: "/comic.jpg",
+      image: "/comic.webp",
     },
     {
       name: "Watercolor",
