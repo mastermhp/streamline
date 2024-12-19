@@ -1,9 +1,16 @@
 "use client";
+
 import React, { useContext, useEffect, useState } from "react";
 import SelectTopic from "./_components/SelectTopic";
 import SelectStyle from "./_components/SelectStyle";
 import SelectDuration from "./_components/SelectDuration";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import axios from "axios";
 import CustomLoading from "./_components/CustomLoading";
 import { v4 as uuidv4 } from "uuid";
@@ -11,41 +18,20 @@ import { VideoDataContext } from "@/app/_context/VideoDataContext";
 import { VideoData } from "@/configs/schema";
 import { useUser } from "@clerk/nextjs";
 import { db } from "@/configs/db";
-
-const scriptData =
-  "It was a dark and stormy night. The wind howled outside, rattling the windows of the old, abandoned house on the hill.  A chill ran down my spine as I approached the house, its once-bright paint now peeling and faded, the windows boarded up. As I stepped inside, the air grew thick and heavy, laden with the scent of decay and something else, something darker.  A single candle flickered on a dusty table, casting long, sinister shadows on the walls. A faint scratching sound echoed from the hallway. I slowly made my way towards it, my heart pounding in my chest. As I rounded the corner, I saw a shadowy figure standing at the end of the hallway. Its eyes glowed with an eerie, unnatural light. I froze, my breath catching in my throat.  As the figure slowly turned towards me, I saw its pale skin, sharp teeth, and vacant eyes. It was a horrifying sight. Terror flooded through me. I turned and ran, the figures eerie laughter echoing behind me. The candlelight flickered wildly, casting grotesque shadows that danced on the walls, as if mocking my fear. I stumbled and fell, my heart pounding like a drum. The figure loomed over me, its long, sharp claws reaching out.  Its face twisted into a horrifying grin as it leaned in, its breath cold and stale. Just as quickly as it appeared, the figure vanished.  I was left alone in the dark, the only light a flickering candle, casting eerie shadows on the walls. I stumbled to my feet and ran out of the house, never looking back. The old house on the hill remained, a silent sentinel against the stormy night. But I knew, deep down, that the darkness inside was waiting, waiting for its next victim. ";
-
-const FILEURL =
-  "https://firebasestorage.googleapis.com/v0/b/streamline-90242.firebasestorage.app/o/streamline-files%2Fc46bc166-16bc-413c-9dd6-93eb54d83fdf.mp3?alt=media&token=f57b8385-7f13-485c-ad2d-d9768e9bcbb7";
-
-const videoSCRIPT = [
-  {
-    imagePrompt:
-      "A dark, overgrown forest path with gnarled trees and flickering shadows. A single beam of light from a flashlight cuts through the darkness, revealing a figure walking alone.  Realistic, cinematic, moody lighting.",
-    ContentText:
-      "The air was thick with the scent of damp earth and decaying leaves.  Each step I took crunched on the dry undergrowth, the sound echoing unnaturally loud in the stillness. My flashlight beam danced across the twisted branches of ancient trees, their gnarled limbs reaching out like skeletal fingers. I knew I shouldn't have come this way, but I couldn't shake the feeling that I was being watched.",
-  },
-  {
-    imagePrompt:
-      "A close-up of a weathered, wooden door with iron hinges, hanging slightly ajar. The door creaks in the wind, revealing a dark and cavernous interior.  Realistic, unsettling, eerie lighting.",
-    ContentText:
-      "As I rounded a bend in the path, I stumbled upon a crumbling stone structure.  A heavy wooden door, its paint peeling and warped, hung slightly ajar.  It creaked ominously in the breeze, revealing a dark, gaping maw beyond.  A chill ran down my spine, and I hesitated, my hand hovering over the rusted handle.",
-  },
-];
+import Image from "next/image";
 
 function CreateNew() {
-  const [formData, setFormData] = useState([]);
+  const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
-  const [videoScript, setVideoScript] = useState();
-  const [audioFileUrl, setAudioFileUrl] = useState();
-  const [captions, setCaptions] = useState();
-  const [imageList, setImageList] = useState();
+  const [error, setError] = useState("");
+
+  const [demoMode, setDemoMode] = useState(false); // Added demoMode state
+
   const { videoData, setVideoData } = useContext(VideoDataContext);
   const { user } = useUser();
 
   const onHandleInputChange = (fieldName, fieldValue) => {
     console.log(fieldName, fieldValue);
-
     setFormData((prev) => ({
       ...prev,
       [fieldName]: fieldValue,
@@ -53,145 +39,296 @@ function CreateNew() {
   };
 
   const onCreateClickHandler = async () => {
-    setLoading(true); 
-    try {
-      const videoScript = await GetVideoScript();
-      if (!videoScript) throw new Error("Failed to generate video script");
-  
-      const audioFileUrl = await GenerateAduioFile(videoScript);
-      if (!audioFileUrl) throw new Error("Failed to generate audio file");
-  
-      const captions = await generateAudioCaption(audioFileUrl, videoScript);
-      if (!captions) throw new Error("Failed to generate captions");
-  
-      const scenes = await GenerateScene(videoScript);
-      if (!scenes.length) throw new Error("Failed to generate scenes");
-  
-      setVideoData({
-        videoScript,
-        audioFileUrl,
-        captions,
-        videoScene: scenes,
-      });
-    } catch (error) {
-      console.error("Error in creating video:", error);
-    } finally {
-      setLoading(false);
+    if (demoMode) {
+      setLoading(true);
+      try {
+        // Simulate API delay
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
+        setVideoData({
+          videoScript: [
+            {
+              ContentText: "This is Paid and as this website is free hosted so for now you are watching a dummy image.",
+              imagePrompt: "A colorful abstract background",
+            },
+          ],
+          audioFileUrl: "https://example.com/demo-audio.mp3",
+          captions: [{ start: 0, end: 5, text: "This is Paid and as this website is free hosted so for now you are watching a dummy image." }],
+          videoScene: [
+            {
+              url: "/demo.jpg?height=480&width=640",
+              alt: "Demo scene showing a colorful abstract background",
+              seed: 123456,
+              num_inference_steps: 50,
+              guidance_scale: 7.5,
+            },
+          ],
+        });
+        setVideoData(demoData);
+      } catch (error) {
+        setError("Error in demo mode: " + error.message);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      setLoading(true);
+      try {
+        const videoScript = await GetVideoScript();
+        if (!videoScript) throw new Error("Failed to generate video script");
+
+        const audioFileUrl = await GenerateAduioFile(videoScript);
+        if (!audioFileUrl) throw new Error("Failed to generate audio file");
+
+        const captions = await generateAudioCaption(audioFileUrl, videoScript);
+        if (!captions) throw new Error("Failed to generate captions");
+
+        const scenes = await GenerateScene(videoScript);
+        if (!scenes.length) throw new Error("Failed to generate scenes");
+
+        setVideoData({
+          videoScript,
+          audioFileUrl,
+          captions,
+          videoScene: scenes,
+        });
+      } catch (error) {
+        setError("Error creating video: " + error.message);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
-  // Get video script
   const GetVideoScript = async () => {
     const prompt = `Write a script to generate ${formData.duration} video on topic: ${formData.topic} along with AI image prompt in ${formData.imageStyle} format for each scene and give me result in JSON format with imagePrompt and ContentText as field, No plain text`;
-    
+
     try {
       const resp = await axios.post("/api/get-video-script", { prompt });
       return resp.data.result || null;
     } catch (error) {
-      console.error("Error in GetVideoScript:", error);
-      return null;
+      throw new Error("Failed to generate video script: " + error.message);
     }
   };
 
   const GenerateAduioFile = async (videoScriptData) => {
-    const script = videoScriptData.map(item => item.ContentText).join(" ");
+    const script = videoScriptData.map((item) => item.ContentText).join(" ");
     const id = uuidv4();
-  
+
     try {
-      const response = await axios.post("/api/generate-audio", { text: script, id });
+      const response = await axios.post("/api/generate-audio", {
+        text: script,
+        id,
+      });
       return response.data?.Result || null;
     } catch (error) {
-      console.error("Error in GenerateAduioFile:", error);
-      return null;
+      throw new Error("Failed to generate audio: " + error.message);
     }
   };
 
-  // const GenerateAduioFile = async (videoScriptData) => {
-  //   setLoading(true);
-  //   let script = "";
-  //   const id = uuidv4();
-  //   videoScriptData.forEach((item) => {
-  //     script = script + item.ContentText + " ";
-  //   });
-
-  //   const resp = await axios.post("/api/generate-audio", {
-  //     text: script,
-  //     id: id,
-  //   });
-  //   setVideoData((prev) => ({
-  //     ...prev,
-  //     audioFileUrl: resp.data.result,
-  //   }));
-  //   setAudioFileUrl(resp.data.result);
-  //   resp.data.result &&
-  //     (await generateAudioCaption(resp.data.result, videoScriptData));
-  //   return resp.data.result;
-
-  // };
-
   const generateAudioCaption = async (fileUrl, videoScriptData) => {
     try {
-      const resp = await axios.post("/api/generate-caption", { audioFileUrl: fileUrl });
+      const resp = await axios.post("/api/generate-caption", {
+        audioFileUrl: fileUrl,
+      });
       return resp.data.result || null;
     } catch (error) {
-      console.error("Error in generateAudioCaption:", error);
-      return null;
+      throw new Error("Failed to generate captions: " + error.message);
     }
   };
 
   const GenerateScene = async (videoScriptData) => {
     try {
+      console.log("Starting scene generation for:", videoScriptData);
       const scenes = await Promise.all(
-        videoScriptData.map(async (element) => {
+        videoScriptData.map(async (element, index) => {
           try {
-            const response = await axios.post("/api/generate-scene", {
-              prompt: element.imagePrompt,
-            });
-            return response.data.result || null; // Return result or null if empty
+            console.log(`Generating scene ${index + 1}:`, element.imagePrompt);
+            const width = 640;
+            const height = 480;
+            const imageUrl = `/demo.jpg?height=${height}&width=${width}&text=Scene${
+              index + 1
+            }`;
+
+            // const imageUrl = `sltn.png${width}/${height}?random=${index}`;
+
+            // Simulate API delay
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+
+            console.log(`Scene ${index + 1} generated:`, imageUrl);
+            return {
+              url: imageUrl,
+              alt: `Scene ${index + 1}: ${element.imagePrompt}`,
+              seed: Math.floor(Math.random() * 1000000),
+              num_inference_steps: 50,
+              guidance_scale: 7.5,
+            };
           } catch (error) {
-            console.error("Error generating scene for prompt:", element.imagePrompt, error);
+            console.error(`Error generating scene ${index + 1}:`, error);
             return null;
           }
         })
       );
-  
-      console.log("Generated scenes:", scenes); // Log scenes array to inspect its structure
-      return scenes.filter((scene) => scene !== null);
+
+      console.log("All generated scenes:", scenes);
+      const filteredScenes = scenes.filter((scene) => scene !== null);
+      console.log("Filtered scenes:", filteredScenes);
+      return filteredScenes;
     } catch (error) {
       console.error("Error in GenerateScene:", error);
       return [];
     }
   };
-  
+
+  // useEffect(() => {
+  //   console.log("Current videoData:", videoData);
+  //   if (
+  //     videoData &&
+  //     Object.keys(videoData).length === 4 &&
+  //     Array.isArray(videoData.videoScene) &&
+  //     videoData.videoScene.length > 0 &&
+  //     videoData.videoScene.every((scene) => scene !== undefined)
+  //   ) {
+  //     console.log("Calling SaveVideoData with:", videoData);
+  //     SaveVideoData(videoData);
+  //   } else {
+  //     console.log("Not saving video data yet. Conditions not met.");
+  //   }
+  // }, [videoData]);
+
+  // const SaveVideoData = async (videoData) => {
+  //   setLoading(true);
+  //   try {
+  //     console.log("Attempting to save video data:", videoData);
+
+  //     const dataToInsert = {
+  //       script: JSON.stringify(videoData.videoScript),
+  //       audioFileUrl: videoData.audioFileUrl,
+  //       captions: JSON.stringify(videoData.captions),
+  //       videoList: JSON.stringify(videoData.videoScene.map(scene => ({
+  //         url: scene.url,
+  //         alt: scene.alt,
+  //         seed: scene.seed
+  //       }))),
+  //       createdBy: user.primaryEmailAddress.emailAddress,
+  //     };
+
+  //     const result = await db
+  //       .insert(VideoData)
+  //       .values(dataToInsert)
+  //       .returning();
+  //     console.log("Database insertion result:", result);
+  //   } catch (error) {
+  //     console.error("Error inserting data into the database:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  const SaveVideoData = async (videoData, demoMode) => {
+    if (demoMode) {
+      setLoading(true);
+      try {
+        // Simulate API delay
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
+        const demoImages = [
+          "/demo.jpg",
+          "/demo2.jpg",
+          "/demo3.jpg",
+          // Add all your image paths here
+        ];
+
+        const demoData = {
+          videoScript: [
+            {
+              ContentText: "This is Paid and as this website is free hosted so for now you are watching a dummy image.",
+              imagePrompt: "A colorful abstract background",
+            },
+            {
+              ContentText: "This is another demo scene.",
+              imagePrompt: "A futuristic cityscape",
+            },
+            {
+              ContentText: "And a final demo scene.",
+              imagePrompt: "A serene mountain landscape",
+            },
+          ],
+          audioFileUrl: "https://example.com/demo-audio.mp3",
+          captions: [{ start: 0, end: 5, text: "This is a demo video." }],
+          videoScene: [],
+        };
+
+        demoData.videoScene = demoData.videoScript.map((element, index) => {
+          console.log(`Generating scene ${index + 1}:`, element.imagePrompt);
+          const imageUrl = demoImages[index] || demoImages[0]; // Fallback to first image if index doesn't exist
+          return {
+            url: imageUrl,
+            alt: `Demo scene ${index + 1}: ${element.imagePrompt}`,
+            seed: 123456,
+            num_inference_steps: 50,
+            guidance_scale: 7.5,
+          };
+        });
+
+        setVideoData(demoData);
+      } catch (error) {
+        setError("Error in demo mode: " + error.message);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      setLoading(true);
+      try {
+        // Ensure videoData exists and has the required properties
+        if (!videoData) throw new Error("No video data provided");
+        // Prepare the data in the correct format for the database
+        const preparedData = {
+          // For JSON fields, pass the objects directly - no need to stringify
+          script: videoData.videoScript || [],
+          audioFileUrl: videoData.audioFileUrl || "",
+          captions: videoData.captions || [],
+          // For array field, ensure it's an array of strings
+          videoList: videoData.videoScene?.map((scene) => scene.url) || [],
+          createdBy: user?.primaryEmailAddress?.emailAddress || "",
+        };
+
+        // Validate required fields
+        if (!preparedData.script.length) throw new Error("Script is required");
+        if (!preparedData.audioFileUrl)
+          throw new Error("Audio URL is required");
+        if (!preparedData.captions.length)
+          throw new Error("Captions are required");
+        if (!preparedData.createdBy)
+          throw new Error("Creator email is required");
+
+        // Log the prepared data for debugging
+        console.log("Prepared data for database:", preparedData);
+
+        // Insert the data
+        const result = await db.insert(VideoData).values(preparedData);
+
+        console.log("Database insertion successful:", result);
+      } catch (error) {
+        console.error("Database insertion error:", error);
+        setError("Failed to save video data: " + error.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
 
   useEffect(() => {
-    console.log(videoData);
-    if (videoData && Object.keys(videoData).length === 4 && videoData.videoScene.every(scene => scene !== undefined)) {
+    if (
+      videoData &&
+      videoData.videoScript &&
+      videoData.audioFileUrl &&
+      videoData.captions &&
+      Array.isArray(videoData.videoScene) &&
+      videoData.videoScene.length > 0
+    ) {
       SaveVideoData(videoData);
     }
   }, [videoData]);
-
-  const SaveVideoData = async (videoData) => {
-    setLoading(true);
-    try {
-      const result = await db
-        .insert(VideoData)
-        .values({
-          script: videoData.videoScript,
-          audioFileUrl: videoData.audioFileUrl,
-          captions: videoData.captions,
-          videoList: videoData.videoScene,
-          createdBy: user.primaryEmailAddress.emailAddress,
-        })
-        .returning("*");
-      console.log("Database insertion result:", result);
-    } catch (error) {
-      console.error("Error inserting data into the database:", error);
-    }
-
-    console.log(result);
-    setLoading(false);
-  };
 
   return (
     <div className="md:px-20">
@@ -199,19 +336,110 @@ function CreateNew() {
         Create New
       </h2>
       <div className="mt-10 shadow-md p-10">
-        {/* select topic  */}
         <SelectTopic onUserSelect={onHandleInputChange} />
-        {/* select style  */}
         <SelectStyle onUserSelect={onHandleInputChange} />
-        {/* duration  */}
         <SelectDuration onUserSelect={onHandleInputChange} />
-
-        {/* button  */}
-        <Button className="mt-10 w-full" onClick={onCreateClickHandler}>
-          Create Video
+        <div className="flex items-center justify-between mt-4 mb-2">
+          <span>Demo Mode</span>
+          <Button
+            onClick={() => setDemoMode(!demoMode)}
+            variant={demoMode ? "default" : "outline"}
+          >
+            {demoMode ? "On" : "Off"}
+          </Button>
+        </div>
+        <Button
+          className="mt-10 w-full"
+          onClick={onCreateClickHandler}
+          disabled={loading}
+        >
+          {loading ? "Creating..." : "Create Video"}
         </Button>
+        {/* <Button className="mt-10 w-full" onClick={onCreateClickHandler}>
+          Create Video
+        </Button> */}
       </div>
-      <CustomLoading loading={loading} />
+      {loading && <CustomLoading loading={loading} />}
+
+      {/* <CustomLoading loading={loading} /> */}
+
+      {error && (
+        <AlertDialog open={!!error}>
+          <AlertDialogContent className="max-w-2xl">
+            <AlertDialogTitle className="text-xl font-bold">
+              Demo Preview
+            </AlertDialogTitle>
+            <div className="grid gap-4">
+              <div className="relative aspect-video w-full overflow-hidden rounded-lg">
+                <Image
+                  src="/demo.jpg"
+                  alt="Demo video preview"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <AlertDialogDescription className="text-base">
+                <p className="mb-2">
+                  <strong>Scene Description:</strong>
+                </p>
+                <p>{videoData?.videoScript?.[0]?.ContentText || "Loading scene description..."}</p>
+                <p className="mt-4">
+                  <strong>Image Prompt:</strong>
+                </p>
+                <p>
+                  {videoData?.videoScript?.[0]?.imagePrompt ||
+                    "Loading image prompt..."}
+                </p>
+              </AlertDialogDescription>
+            </div>
+            <div className="mt-4 flex justify-end">
+              <Button onClick={() => setError("")}>Close Preview</Button>
+            </div>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
+
+      {videoData && videoData.videoScene && (
+        <div className="mt-10">
+          <h3 className="text-2xl font-bold mb-4">Generated Scenes</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {videoData.videoScene.map((scene, index) => (
+              <div key={index} className="border rounded-lg p-4">
+                <div className="relative aspect-video">
+                  <Image
+                    src={scene.url}
+                    alt={scene.alt}
+                    fill
+                    className="object-cover rounded-md"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  />
+                </div>
+                <p className="mt-2 text-sm text-gray-600">{scene.alt}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* {videoData && videoData.videoScene && (
+        <div className="mt-10">
+          <h3 className="text-2xl font-bold mb-4">Generated Scenes</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {videoData.videoScene.map((scene, index) => (
+              <div key={index} className="border rounded-lg p-4">
+                <Image
+                  src={scene.url}
+                  alt={scene.alt || `Generated scene ${index + 1}`}
+                  width={300}
+                  height={200}
+                  layout="responsive"
+                />
+                <p className="mt-2 text-sm text-gray-600">{scene.alt}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )} */}
     </div>
   );
 }

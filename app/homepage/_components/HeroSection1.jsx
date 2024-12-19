@@ -30,7 +30,7 @@ function HeroSection1() {
               <span className="sr-only">Your Company</span>
               {/* <Image className="w-full h-full" src={"/"} alt='logo' width={31} height={31} /> */}
 
-              <img alt="" src="stln.png" className="h-8 w-auto" />
+              <img alt="" src="stln.png" className="h-8 w-auto -motion-translate-x-in-100 motion-translate-y-in-75" />
             </a>
           </div>
           <div className="flex lg:hidden">
@@ -109,7 +109,7 @@ function HeroSection1() {
         </Dialog>
       </header>
 
-      <div className="relative isolate px-6 pt-14 lg:px-8">
+      <div className="relative isolate px-6 lg:px-8 ">
         <div
           aria-hidden="true"
           className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
@@ -122,8 +122,7 @@ function HeroSection1() {
             className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
           />
         </div>
-        <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
-          
+        <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-50">
           <div className="hidden sm:mb-8 sm:flex sm:justify-center">
             <div className="relative rounded-full px-3 py-1 text-sm/6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20">
               Announcing our next round of funding.{" "}
@@ -135,8 +134,10 @@ function HeroSection1() {
           </div>
           <div className="text-center">
             <Badge variant="secondary" className="h-6">
-              <Sparkles className="mr-2 h-3.5 w-3.5" />
-              Powered by GEMINI
+              <Sparkles className="text-fuchsia-800 mr-2 h-3.5 w-3.5" />
+              <h3 className="motion-preset-typewriter-[18] motion-duration-[8000ms] text-fuchsia-800">
+                Powered by GEMINI
+              </h3>
             </Badge>
             <h1 className="mt-2 text-3xl font-bold sm:text-3xl md:text-4xl lg:text-5xl">
               Automate Your Creation
@@ -154,7 +155,10 @@ function HeroSection1() {
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <Link
                 href={"/dashboard"}
-                className="rounded-md bg-fuchsia-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-fuchsia-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fuchsia-600"
+                className="rounded-xl bg-fuchsia-700 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm 
+                motion-preset-oscillate 
+                motion-duration-2000 hover:bg-fuchsia-900 
+                hover:motion-preset-slide-right  hover:motion-duration-2000 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fuchsia-800"
               >
                 Get started
               </Link>

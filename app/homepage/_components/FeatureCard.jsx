@@ -6,7 +6,7 @@ function FeatureCard({ icon, title, description }) {
     
           <Card>
             <CardContent className="p-6">
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-4 ">
                 <div className="p-2 bg-gray-100 rounded-lg dark:bg-gray-800">{icon}</div>
                 <div>
                   <h3 className="font-bold">{title}</h3>

@@ -12,32 +12,34 @@ import Footer from "./homepage/_components/Footer";
 
 export default function Home() {
   return (
-   <div>
-    <div className="">
-      <HeroSection1/>
-    </div>
     <div>
-      <PowerfulFeatures/>
+      <div className="">
+        <HeroSection1 />
+      </div>
+      <div>
+        <PowerfulFeatures />
+      </div>
+      <div>
+        <CtaSection />
+      </div>
+      <div>
+        <BentoGridSection />
+      </div>
+      <div>
+        <PricingSection />
+      </div>
+      <div>
+        <StatsSection />
+      </div>
+      <div>
+        <NewsletterSection />
+      </div>
+      <div>
+        <hr className=" border-fuchsia-950" />
+      </div>{" "}
+      <div>
+        <Footer />
+      </div>
     </div>
-    <div>
-      <BentoGridSection/>
-    </div>
-    <div>
-      <CtaSection/>
-    </div>
-    
-    <div>
-      <PricingSection/>
-    </div>
-    <div>
-      <StatsSection/>
-    </div>
-    <div>
-      <NewsletterSection/>
-    </div>
-    <div>
-      <Footer/>
-    </div>
-   </div>
   );
 }

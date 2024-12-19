@@ -30,7 +30,7 @@ function NewsletterSection() {
               />
               <button
                 type="submit"
-                className="flex-none rounded-md bg-fuchsia-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-fuchsia-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fuchsia-500"
+                className="flex-none rounded-md bg-fuchsia-700 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-fuchsia-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fuchsia-500"
               >
                 Subscribe
               </button>
